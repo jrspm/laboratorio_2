@@ -464,7 +464,7 @@ ORDER BY APELLIDOS ASC, NOMBRE ASC;
 comisión, ordenados por fecha de alta en la empresa.
 */
 
-SELECT APELLIDOS, NOMBRE, SUELDO, FECHA_ALTA FROM recursoshumanos.empleado
+SELECT APELLIDOS, NOMBRE, SUELDO*12 AS SUELDO_ANUAL, FECHA_ALTA FROM recursoshumanos.empleado
 WHERE COMISION IS NULL
 ORDER BY FECHA_ALTA DESC;
 
@@ -526,7 +526,7 @@ WHERE CARGO="COMERCIAL";
 
 SELECT recursoshumanos.departamento.LOCALIDAD, recursoshumanos.empleado.NOMBRE, recursoshumanos.empleado.APELLIDOS, recursoshumanos.empleado.SUELDO, (SELECT GRADO FROM recursoshumanos.rango_sueldo WHERE recursoshumanos.empleado.SUELDO BETWEEN SUELDO_MIN AND SUELDO_MAX ) AS VALOR_RANGO FROM recursoshumanos.empleado
 INNER JOIN recursoshumanos.departamento ON  recursoshumanos.departamento.ID=recursoshumanos.empleado.DEPARTAMENTO_ID
-WHERE VALOR_RANGO=0 OR VALOR_RANGO=1  ;
+WHERE (SELECT GRADO FROM recursoshumanos.rango_sueldo WHERE recursoshumanos.empleado.SUELDO BETWEEN SUELDO_MIN AND SUELDO_MAX )=2 OR (SELECT GRADO FROM recursoshumanos.rango_sueldo WHERE recursoshumanos.empleado.SUELDO BETWEEN SUELDO_MIN AND SUELDO_MAX )=3;
 
 
 /*
@@ -540,6 +540,11 @@ WHERE VALOR_RANGO=0 OR VALOR_RANGO=1  ;
 anual es superior a 18.000 €.
 */
 
+SELECT recursoshumanos.departamento.NOMBRE FROM recursoshumanos.departamento
+INNER JOIN recursoshumanos.empleado ON recursoshumanos.empleado.DEPARTAMENTO_ID=recursoshumanos.departamento.ID
+WHERE COMISION IS NOT NULL OR SUELDO*12>18000
+group by recursoshumanos.departamento.NOMBRE;
+
 /*
 --------------------------------- FIN PREGUNTA 21--------------------------------
 */
@@ -549,6 +554,11 @@ anual es superior a 18.000 €.
 --------------------------------- INICIO PREGUNTA 22 --------------------------------
 22. Calcular el número de empleados del departamento de VENTAS.
 */
+
+SELECT recursoshumanos.departamento.NOMBRE, count(recursoshumanos.empleado.NOMBRE) AS CANTIDAD_EMPLEADOS FROM recursoshumanos.departamento
+INNER JOIN recursoshumanos.empleado ON recursoshumanos.empleado.DEPARTAMENTO_ID=recursoshumanos.departamento.ID
+WHERE recursoshumanos.departamento.NOMBRE="VENTAS";
+
 
 /*
 --------------------------------- FIN PREGUNTA 22--------------------------------
@@ -561,6 +571,9 @@ anual es superior a 18.000 €.
 todos los empleados cobran al menos una comisión de o €.
 */
 
+SELECT AVG(COALESCE(COMISION, 0)) AS COMISION_MEDIA FROM recursoshumanos.empleado
+WHERE CARGO!="PRESIDENTE";
+
 /*
 --------------------------------- FIN PREGUNTA 23--------------------------------
 */
@@ -571,6 +584,11 @@ todos los empleados cobran al menos una comisión de o €.
 24. Calcular el sueldo máximo de los empleados de cada departamento siempre que el
 mínimo sueldo del departamento sea superior a 780 €.
 */
+
+SELECT recursoshumanos.departamento.NOMBRE, MAX(recursoshumanos.empleado.SUELDO) AS SUELDO_MAXIMO_EMPLEADOS FROM recursoshumanos.departamento
+INNER JOIN recursoshumanos.empleado ON recursoshumanos.empleado.DEPARTAMENTO_ID=recursoshumanos.departamento.ID
+group by recursoshumanos.departamento.NOMBRE
+HAVING MIN(recursoshumanos.empleado.SUELDO)>780;
 
 /*
 --------------------------------- FIN PREGUNTA 24--------------------------------
@@ -583,6 +601,14 @@ mínimo sueldo del departamento sea superior a 780 €.
 departamento que ESTHER.
 */
 
+SELECT recursoshumanos.departamento.NOMBRE, recursoshumanos.empleado.NOMBRE, recursoshumanos.empleado.FECHA_ALTA FROM recursoshumanos.empleado
+INNER JOIN recursoshumanos.departamento ON recursoshumanos.empleado.DEPARTAMENTO_ID=recursoshumanos.departamento.ID
+WHERE recursoshumanos.empleado.DEPARTAMENTO_ID=(SELECT recursoshumanos.departamento.ID FROM recursoshumanos.departamento 
+INNER JOIN recursoshumanos.empleado ON recursoshumanos.empleado.DEPARTAMENTO_ID=recursoshumanos.departamento.ID
+WHERE recursoshumanos.empleado.NOMBRE="ESTHER");
+
+
+
 /*
 --------------------------------- FIN PREGUNTA 25--------------------------------
 */
@@ -592,6 +618,12 @@ departamento que ESTHER.
 --------------------------------- INICIO PREGUNTA 26 --------------------------------
 26. Calcular el número de empleados que están en BILBAO
 */
+
+SELECT recursoshumanos.departamento.LOCALIDAD, SUM(recursoshumanos.empleado.NOMBRE) AS CANTIDAD_EMPLEADOS FROM recursoshumanos.empleado
+INNER JOIN recursoshumanos.departamento ON recursoshumanos.empleado.DEPARTAMENTO_ID=recursoshumanos.departamento.ID
+WHERE recursoshumanos.departamento.LOCALIDAD="BILBAO"
+group by recursoshumanos.departamento.NOMBRE;
+
 
 /*
 --------------------------------- FIN PREGUNTA 26--------------------------------
