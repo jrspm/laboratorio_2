@@ -271,3 +271,68 @@ Considerando las reglas de normalización, ¿Qué mejoras podría realizar en la
 /*
 --------------------------------- FIN PREGUNTA 1--------------------------------
 */
+
+/*
+--------------------------------- INICIO PREGUNTA 2--------------------------------
+Considerando las reglas de normalización, ¿Qué mejoras podría realizar en las tablas?
+¿Qué registro de empleado falla y por qué? ¿Cómo se corrige?
+*/
+
+-- se encontraron varios, pero clasificados en dos tipos:
+
+-- Primero: dentro del usuario, se uncluyeron carateres que no eran validos, por lo que solo se 
+-- cambio el caracter por uno valido
+
+-- Segundo: habian usuarios repetidos o con el mismo ID, si solo es el ID, entonces solo se corrige
+-- si son todos los datos iguales, se descarta porque ya se agrego el usuario.
+
+/*
+--------------------------------- FIN PREGUNTA 2--------------------------------
+*/
+
+/*
+--------------------------------- INICIO PREGUNTA 3--------------------------------
+Obtener los apellidos del empleado
+*/
+
+SELECT APELLIDOS FROM recursoshumanos.empleado;
+
+
+/*
+--------------------------------- FIN PREGUNTA 3--------------------------------
+*/
+
+/*
+--------------------------------- INICIO PREGUNTA 4--------------------------------
+Obtener los apellidos del empleado sin repetición
+*/
+
+SELECT APELLIDOS FROM recursoshumanos.empleado group by APELLIDOS;
+
+
+/*
+--------------------------------- FIN PREGUNTA 4--------------------------------
+*/
+
+/*
+--------------------------------- INICIO PREGUNTA 5--------------------------------
+Obtener todos los datos de los empleados apellidados López
+*/
+
+SELECT * FROM recursoshumanos.empleado WHERE APELLIDOS REGEXP "LOPEZ";
+
+
+/*
+--------------------------------- FIN PREGUNTA 5--------------------------------
+*/
+
+--------------------------------- INICIO PREGUNTA 6 --------------------------------
+Obtener todos los datos del empleado con apellido López o Peña
+*/
+
+SELECT * FROM recursoshumanos.empleado WHERE APELLIDOS REGEXP "LOPEZ";
+
+
+/*
+--------------------------------- FIN PREGUNTA 5--------------------------------
+*/
